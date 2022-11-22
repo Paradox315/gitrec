@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build -f src\main\docker\Dockerfile.native-micro -t quarkus-gitrec .
+      run: docker build -f src/main/docker/Dockerfile.native-micro -t quarkus-gitrec .
 
     - name: Docker Login
       run: docker login --username=${{ secrets.DOCKER_REPO_USER }} --password=${{ secrets.DOCKER_REPO_PASSWORD }}
