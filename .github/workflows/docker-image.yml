@@ -13,15 +13,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build -f src/main/docker/Dockerfile.native-micro -t quarkus-gitrec .
+      - name: Checkout the code
+        uses: actions/checkout@master
 
-    - name: Docker Login
-      run: docker login --username=${{ secrets.DOCKER_REPO_USER }} --password=${{ secrets.DOCKER_REPO_PASSWORD }}
+      - name: Download the binary
+        uses: actions/download-artifact@v1
+        with:
+          name: native-executable
 
-    - name: Docker Push
-      run: docker tag quarkus-gitrec quarkus-gitrec:latest && docker push quarkus-gitrec:latest
+      - name: Dockerize
+        id: dockerize
+        uses: maxday/quarkus-dockerize-action@master
+        with:
+          tag: quarkus-recommender
+          executablePath: native-executable/app-runner
 
-    - name: Run Revive Action by pulling pre-built image
-      uses: docker://morphy/revive-action:v2
+      - name: Docker Login
+        run: docker login --username=${{ secrets.DOCKER_REPO_USER }} --password=${{ secrets.DOCKER_REPO_PASSWORD }}
+
+      - name: Docker Push
+        run: docker push quarkus-recommender
+
