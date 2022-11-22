@@ -1,4 +1,4 @@
-package org.github.entity
+package org.github.entity.response
 
 data class ResponseInfo<T>(
     val code: Int,

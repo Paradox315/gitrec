@@ -1,14 +1,11 @@
 package org.github.entity
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import java.time.LocalDate
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class RepositoryVO(
+data class RepositoryDto(
     var id: Long? = null,
     var name: String? = null,
     var owner: String? = null,
@@ -24,8 +21,8 @@ data class RepositoryVO(
     var updatedAt: LocalDate
 ) {
     companion object {
-        fun fromRepository(repository: Repository): RepositoryVO {
-            return RepositoryVO(
+        fun fromRepository(repository: Repository): RepositoryDto {
+            return RepositoryDto(
                 id = repository.id,
                 name = repository.name,
                 owner = repository.owner,

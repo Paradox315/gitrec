@@ -1,6 +1,6 @@
 package org.github.config
 
-import org.github.entity.ResponseInfo
+import org.github.entity.response.ResponseInfo
 import javax.ws.rs.core.Response
 import javax.ws.rs.ext.ExceptionMapper
 import javax.ws.rs.ext.Provider

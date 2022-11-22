@@ -1,41 +1,39 @@
 package org.github.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.smallrye.mutiny.Uni
-import io.smallrye.mutiny.coroutines.awaitSuspending
 import org.eclipse.microprofile.rest.client.inject.RestClient
 import org.github.dao.RecommendClient
 import org.github.dao.RepoRepository
 import org.github.dao.TopicRepository
 import org.github.dao.UserRepository
-import org.github.entity.*
+import org.github.entity.RepositoryDto
+import org.github.entity.Score
+import org.github.entity.Topic
+import org.github.entity.User
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 
 @ApplicationScoped
 class RecommendService {
     @RestClient
-    lateinit var recommendClient: RecommendClient
+    private lateinit var recommendClient: RecommendClient
 
 
     @Inject
-    lateinit var repoRepository: RepoRepository
+    private lateinit var repoRepository: RepoRepository
 
     @Inject
-    lateinit var topicRepository: TopicRepository
+    private lateinit var topicRepository: TopicRepository
 
     @Inject
-    lateinit var userRepository: UserRepository
+    private lateinit var userRepository: UserRepository
 
 
-    fun getPopular(n: Int, offset: Int): List<RepositoryVO>? {
+    fun getPopular(n: Int, offset: Int): List<RepositoryDto>? {
         val items = recommendClient.getPopular(n, offset)
         return if (items.isNotEmpty()) {
             repoRepository.findByIds(items.map { it.id.toLong() }).map {
-                RepositoryVO.fromRepository(it)
+                RepositoryDto.fromRepository(it)
             }
         } else {
             null
@@ -55,11 +53,11 @@ class RecommendService {
         } else null
     }
 
-    fun getLatest(n: Int, offset: Int): List<RepositoryVO>? {
+    fun getLatest(n: Int, offset: Int): List<RepositoryDto>? {
         val items = recommendClient.getLatest(n, offset)
         return if (items.isNotEmpty()) {
             repoRepository.findByIds(items.map { it.id.toLong() })
-                .map { RepositoryVO.fromRepository(it) }
+                .map { RepositoryDto.fromRepository(it) }
         } else null
     }
 
@@ -70,11 +68,11 @@ class RecommendService {
         } else null
     }
 
-    fun getItemNeighbors(n: Int, offset: Int, itemId: String): List<RepositoryVO>? {
+    fun getItemNeighbors(n: Int, offset: Int, itemId: String): List<RepositoryDto>? {
         val items = recommendClient.getItemNeighbors(n, offset, itemId)
         return if (items.isNotEmpty()) {
             repoRepository.findByIds(items.map { it.id.toLong() })
-                .map { RepositoryVO.fromRepository(it) }
+                .map { RepositoryDto.fromRepository(it) }
         } else null
     }
 

@@ -1,4 +1,4 @@
-package org.github.entity
+package org.github.entity.response
 
 enum class ResponseCodeEnum(
     val code: Int,

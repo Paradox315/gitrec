@@ -1,6 +1,6 @@
 package org.github.resource
 
-import org.github.entity.ResponseInfo
+import org.github.entity.response.ResponseInfo
 import org.github.service.RecommendService
 import org.github.utils.Helper
 import javax.inject.Inject
