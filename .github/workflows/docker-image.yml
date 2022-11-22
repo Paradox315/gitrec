@@ -15,4 +15,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build -f src\main\docker\Dockerfile.native-micro -t quarkus-gitrec .
+
+    - name: Docker Login
+      run: docker login --username=${{ secrets.DOCKER_REPO_USER }} --password=${{ secrets.DOCKER_REPO_PASSWORD }}
+
+    - name: Docker Push
+      run: docker tag quarkus-gitrec quarkus-gitrec:latest && docker push quarkus-gitrec:latest
+
+    - name: Run Revive Action by pulling pre-built image
+      uses: docker://morphy/revive-action:v2
