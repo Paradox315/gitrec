@@ -8,29 +8,41 @@ on:
 
 jobs:
 
-  build:
-
+  native_build:
     runs-on: ubuntu-latest
-
+    name: Build native Quarkus app
     steps:
       - name: Checkout the code
         uses: actions/checkout@master
-
-      - name: Download the binary
-        uses: actions/download-artifact@v1
+      - name: Build native executable
+        uses: maxday/quarkus-native-build-docker-action@1
+        with:
+          outputName: app-runner
+      - name: Upload native executable
+        uses: actions/upload-artifact@v1
         with:
           name: native-executable
+          path: app-runner
 
-      - name: Dockerize
-        id: dockerize
-        uses: maxday/quarkus-dockerize-action@master
-        with:
-          tag: quarkus-recommender
-          executablePath: native-executable/app-runner
-
-      - name: Docker Login
-        run: docker login --username=${{ secrets.DOCKER_REPO_USER }} --password=${{ secrets.DOCKER_REPO_PASSWORD }}
-
-      - name: Docker Push
-        run: docker push quarkus-recommender
+    dockerize:
+      runs-on: ubuntu-latest
+      name: Embed the native executable in a Docker container
+      needs: native_build
+      steps:
+        - name: Checkout the code
+          uses: actions/checkout@master
+        - name: Download the binary
+          uses: actions/download-artifact@v1
+          with:
+            name: native-executable
+        - name: Dockerize
+          id: dockerize
+          uses: maxday/quarkus-dockerize-action@master
+          with:
+            tag: quarkus-recommender
+            executablePath: native-executable/app-runner
+        - name: Docker Login
+          run: docker login --username=${{ secrets.DOCKER_REPO_USER }} --password=${{ secrets.DOCKER_REPO_PASSWORD }}
+        - name: Docker Push
+          run: docker push quarkus-recommender
 
