@@ -65,4 +65,8 @@ class RecommendResource {
             recommendService.getUserNeighbors(n, offset, userId)
         }
     )
+
+    @GET
+    @Path("/")
+    fun ping() = ResponseInfo.success("pong")
 }
